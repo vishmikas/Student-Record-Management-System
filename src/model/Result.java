@@ -8,7 +8,7 @@ public class Result {
 
     public Result() {}
 
-    public Result(int resultId, int studentId, String subject, int marks) {
+    public Result(int studentId, String subject, int marks) {
         this.studentId = studentId;
         this.subject = subject;
         this.marks = marks;
