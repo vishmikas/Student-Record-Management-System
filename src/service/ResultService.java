@@ -3,6 +3,8 @@ package service;
 import dao.ResultDAO;
 import model.Result;
 
+import java.util.List;
+
 public class ResultService {
 
     public static boolean addResult(Result result) {
@@ -21,5 +23,14 @@ public class ResultService {
         }
 
         return ResultDAO.addResult(result);
+    }
+
+    public static List<Result> getResultsByStudentId(int studentId) {
+        if (studentId <= 0) {
+            System.out.println("Invalid student ID");
+            return null;
+        }
+
+        return ResultDAO.getResultsByStudentId(studentId);
     }
 }

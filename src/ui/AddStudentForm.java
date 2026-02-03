@@ -15,7 +15,7 @@ public class AddStudentForm extends JFrame {
         setTitle("Add Student");
         setSize(400, 250);
         setLayout(new GridLayout(4, 2, 10, 10));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         add(new JLabel("Reg No:"));
         regNoField = new JTextField();
@@ -51,9 +51,5 @@ public class AddStudentForm extends JFrame {
         });
 
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new AddStudentForm();
     }
 }

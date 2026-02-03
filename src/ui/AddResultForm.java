@@ -15,7 +15,7 @@ public class AddResultForm extends JFrame {
         setTitle("Add Result");
         setSize(400, 250);
         setLayout(new GridLayout(4, 2, 10, 10));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         add(new JLabel("Student ID:"));
         studentIdField = new JTextField();
@@ -56,9 +56,5 @@ public class AddResultForm extends JFrame {
         });
 
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new AddResultForm();
     }
 }
