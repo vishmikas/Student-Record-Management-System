@@ -54,4 +54,29 @@ public class ResultDAO {
 
         return results;
     }
+
+    public static List<Result> getAllResults() {
+        List<Result> results = new ArrayList<>();
+        String sql = "SELECT * FROM results";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                Result result = new Result();
+                result.setResultId(rs.getInt("result_id"));
+                result.setStudentId(rs.getInt("student_id"));
+                result.setSubject(rs.getString("subject"));
+                result.setMarks(rs.getInt("marks"));
+
+                results.add(result);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
 }
