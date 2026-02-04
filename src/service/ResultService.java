@@ -33,4 +33,8 @@ public class ResultService {
 
         return ResultDAO.getResultsByStudentId(studentId);
     }
+
+    public static List<Result> getAllResults() {
+        return ResultDAO.getAllResults();
+    }
 }
