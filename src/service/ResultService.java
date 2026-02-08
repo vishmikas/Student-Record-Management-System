@@ -37,4 +37,26 @@ public class ResultService {
     public static List<Result> getAllResults() {
         return ResultDAO.getAllResults();
     }
+
+    public static boolean updateResult(Result result) {
+        if (result.getSubject() == null || result.getSubject().isEmpty()) {
+            System.out.println("Subject cannot be empty");
+            return false;
+        }
+        if (result.getMarks() < 0 || result.getMarks() > 100) {
+            System.out.println("Marks must be between 0 and 100");
+            return false;
+        }
+
+        return ResultDAO.updateResult(result);
+    }
+
+    public static boolean deleteResult(int resultId) {
+        if (resultId <= 0) {
+            System.out.println("Invalid Result ID");
+            return false;
+        }
+
+        return ResultDAO.deleteResult(resultId);
+    }
 }

@@ -10,14 +10,16 @@ import java.util.List;
 
 public class ViewResultsForm extends JFrame {
 
-    private JTextField studentIdField;
-    private JButton loadButton;
+    private JTextField studentIdField, subjectField, marksField;
+    private JButton searchButton, updateButton, deleteButton;
     private JTable table;
     private DefaultTableModel tableModel;
 
+    private int selectedResultId = -1;
+
     public ViewResultsForm() {
         setTitle("View Results");
-        setSize(700, 400);
+        setSize(800, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
@@ -28,8 +30,8 @@ public class ViewResultsForm extends JFrame {
         studentIdField = new JTextField(10);
         topPanel.add(studentIdField);
 
-        loadButton = new JButton("Search");
-        topPanel.add(loadButton);
+        searchButton = new JButton("Search");
+        topPanel.add(searchButton);
 
         add(topPanel, BorderLayout.NORTH);
 
@@ -39,39 +41,35 @@ public class ViewResultsForm extends JFrame {
         table = new JTable(tableModel);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        loadButton.addActionListener(e -> searchResults());
+        JPanel bottomPanel = new JPanel(new GridLayout(2, 4, 10, 10));
 
-        loadAllResults();
+        bottomPanel.add(new JLabel("Subject:"));
+        subjectField = new JTextField();
+        bottomPanel.add(subjectField);
 
+        bottomPanel.add(new JLabel("Marks:"));
+        marksField = new JTextField();
+        bottomPanel.add(marksField);
+
+        updateButton = new JButton("Update");
+        deleteButton = new JButton("Delete");
+
+        bottomPanel.add(updateButton);
+        bottomPanel.add(deleteButton);
+
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        searchButton.addActionListener(e -> searchResults());
+        updateButton.addActionListener(e -> updateResult());
+        deleteButton.addActionListener(e -> deleteResult());
+
+        table.getSelectionModel().addListSelectionListener(e -> loadSelectedRow());
+
+        refreshTable();
         setVisible(true);
     }
 
-    private void loadResults() {
-        tableModel.setRowCount(0);
-
-        try {
-            int studentId = Integer.parseInt(studentIdField.getText());
-            List<Result> results = ResultService.getResultsByStudentId(studentId);
-
-            if (results == null || results.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No results found");
-                return;
-            }
-
-            for (Result r : results) {
-                tableModel.addRow(new Object[]{
-                        r.getResultId(),
-                        r.getSubject(),
-                        r.getMarks()
-                });
-            }
-
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Student ID must be a number");
-        }
-    }
-
-    private void loadAllResults() {
+    private void refreshTable() {
         tableModel.setRowCount(0);
 
         List<Result> results = ResultService.getAllResults();
@@ -86,13 +84,13 @@ public class ViewResultsForm extends JFrame {
         }
     }
 
+
     private void searchResults() {
         tableModel.setRowCount(0);
-
         String input = studentIdField.getText().trim();
 
         if (input.isEmpty()) {
-            loadAllResults();
+            refreshTable();
             return;
         }
 
@@ -100,8 +98,8 @@ public class ViewResultsForm extends JFrame {
             int studentId = Integer.parseInt(input);
             List<Result> results = ResultService.getResultsByStudentId(studentId);
 
-            if (results == null || results.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No results found for this student");
+            if (results.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No results found");
                 return;
             }
 
@@ -113,10 +111,80 @@ public class ViewResultsForm extends JFrame {
                         r.getMarks()
                 });
             }
-
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Student ID must be a number");
         }
+    }
+
+    private void loadSelectedRow() {
+        int row = table.getSelectedRow();
+        if (row == -1) return;
+
+        selectedResultId = (int) tableModel.getValueAt(row, 0);
+        subjectField.setText(tableModel.getValueAt(row, 2).toString());
+        marksField.setText(tableModel.getValueAt(row, 3).toString());
+    }
+
+    private void updateResult() {
+        if (selectedResultId == -1) {
+            JOptionPane.showMessageDialog(this, "Select a result to update");
+            return;
+        }
+
+        try {
+            String subject = subjectField.getText().trim();
+            int marks = Integer.parseInt(marksField.getText().trim());
+
+            Result result = new Result();
+            result.setResultId(selectedResultId);
+            result.setSubject(subject);
+            result.setMarks(marks);
+
+            boolean success = ResultService.updateResult(result);
+
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Result updated successfully");
+                refreshTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Update failed");
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Marks must be a number");
+        }
+    }
+
+    private void deleteResult() {
+        if (selectedResultId == -1) {
+            JOptionPane.showMessageDialog(this, "Select a result to delete");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this result?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean success = ResultService.deleteResult(selectedResultId);
+
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Result deleted");
+                refreshTable();
+
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Delete failed");
+            }
+        }
+    }
+
+    private void clearFields() {
+        subjectField.setText("");
+        marksField.setText("");
+        selectedResultId = -1;
     }
 
 }

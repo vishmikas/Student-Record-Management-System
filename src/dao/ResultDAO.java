@@ -6,6 +6,7 @@ import model.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,5 +79,39 @@ public class ResultDAO {
         }
 
         return results;
+    }
+
+    public static boolean updateResult(Result result) {
+        String sql = "UPDATE results SET subject = ?, marks = ? WHERE result_id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, result.getSubject());
+            pst.setInt(2, result.getMarks());
+            pst.setInt(3, result.getResultId());
+
+            int row = pst.executeUpdate();
+            return row > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteResult(int resultId) {
+        String sql = "DELETE FROM results WHERE result_id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setInt(1, resultId);
+
+            int row = pst.executeUpdate();
+            return row > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

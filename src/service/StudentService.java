@@ -7,9 +7,9 @@ import java.util.List;
 
 public class StudentService {
 
-    private final StudentDAO studentDAO = new StudentDAO();
+    private static final StudentDAO studentDAO = new StudentDAO();
 
-    public boolean addStudent(Student student) {
+    public static boolean addStudent(Student student) {
 
         if (student.getRegNo() == null || student.getRegNo().trim().isEmpty()) {
             System.out.println("Registration number cannot be empty");
