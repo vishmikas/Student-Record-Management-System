@@ -24,6 +24,7 @@ public class ViewResultsForm extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
 
+
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(new JLabel("Student ID:"));
 
@@ -35,27 +36,35 @@ public class ViewResultsForm extends JFrame {
 
         add(topPanel, BorderLayout.NORTH);
 
+
         tableModel = new DefaultTableModel(
                 new String[]{"Result ID", "Student ID", "Subject", "Marks"}, 0
         );
         table = new JTable(tableModel);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        JPanel bottomPanel = new JPanel(new GridLayout(2, 4, 10, 10));
 
-        bottomPanel.add(new JLabel("Subject:"));
+        JPanel bottomPanel = new JPanel(new BorderLayout(10, 10));
+
+        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+
+        formPanel.add(new JLabel("Subject:"));
         subjectField = new JTextField();
-        bottomPanel.add(subjectField);
+        formPanel.add(subjectField);
 
-        bottomPanel.add(new JLabel("Marks:"));
+        formPanel.add(new JLabel("Marks:"));
         marksField = new JTextField();
-        bottomPanel.add(marksField);
+        formPanel.add(marksField);
 
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         updateButton = new JButton("Update");
         deleteButton = new JButton("Delete");
 
-        bottomPanel.add(updateButton);
-        bottomPanel.add(deleteButton);
+        buttonPanel.add(updateButton);
+        buttonPanel.add(deleteButton);
+
+        bottomPanel.add(formPanel, BorderLayout.CENTER);
+        bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(bottomPanel, BorderLayout.SOUTH);
 
