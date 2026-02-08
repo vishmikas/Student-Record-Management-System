@@ -87,6 +87,7 @@ public class ViewResultsForm extends JFrame {
 
     private void searchResults() {
         tableModel.setRowCount(0);
+
         String input = studentIdField.getText().trim();
 
         if (input.isEmpty()) {
@@ -100,6 +101,7 @@ public class ViewResultsForm extends JFrame {
 
             if (results.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No results found");
+                refreshTable();
                 return;
             }
 
@@ -111,10 +113,13 @@ public class ViewResultsForm extends JFrame {
                         r.getMarks()
                 });
             }
+
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Student ID must be a number");
+            refreshTable();
         }
     }
+
 
     private void loadSelectedRow() {
         int row = table.getSelectedRow();
